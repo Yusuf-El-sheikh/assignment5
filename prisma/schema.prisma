@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+enum Role {
+  user
+  admin
+}
+
+model Users {
+  id             Int        @id @default(autoincrement())
+  name           String?    @db.VarChar(150)
+  email          String     @unique @db.VarChar(150)
+  hashedPassword String     @map("password")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+  role           Role       @default(user)
+  
+  posts          Posts[]
+  comments       Comments[]
+
+  @@map("users")
+}
+
+model Posts {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  title     String   @db.VarChar(150)
+  content   String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  isDeleted Boolean  @default(false) @map("is_deleted")
+
+  comments Comments[]
+
+  user Users @relation(fields: [userId], references: [id])
+
+  @@map("posts")
+}
+
+model Comments {
+  id        Int      @id @default(autoincrement())
+  postId    Int      @map("post_id")
+  userId    Int      @map("user_id")
+  content   String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user Users @relation(fields: [userId], references: [id])
+  post Posts @relation(fields: [postId], references: [id])
+
+  @@map("comments")
+}
