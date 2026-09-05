@@ -14,7 +14,7 @@ enum Role {
 
 model Users {
   id             Int        @id @default(autoincrement())
-  name           String?    @db.VarChar(150)
+  name           String     @db.VarChar(150)
   email          String     @unique @db.VarChar(150)
   hashedPassword String     @map("password")
   createdAt      DateTime   @default(now()) @map("created_at")
