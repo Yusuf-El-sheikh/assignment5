@@ -1,6 +1,5 @@
 const usersRepository = require("./users.repository");
 const bcrypt = require("bcrypt");
-const JWT = require("jsonwebtoken");
 
 async function register(name, email, password, role) {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
