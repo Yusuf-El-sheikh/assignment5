@@ -42,10 +42,44 @@ const createComment = async (postId, userId, content) => {
     return comment;
 }
 
+const findCommentsByWord = async (word) => {
+    const comment = await prisma.comments.findMany({
+        where: { content: { contains: word } }
+    });
+
+    return comment;
+}
+
+const find3CommentsByPostId = async (postId) => {
+    const comment = await prisma.comments.findMany({
+        where: { postId: postId },
+        orderBy: { createdAt: "desc" },
+        take: 3,
+        select: { id: true, content: true, createdAt: true }
+    });
+
+    return comment;
+}
+
+const findById = async (commentId) => {
+    const comment = await prisma.comments.findUnique({
+        where: { id: commentId },
+        include: {
+            user: { select: { id: true, name: true, email: true } },
+            post: { select: { id: true, title: true, content: true } }
+        }
+    });
+
+    return comment;
+}
+
 module.exports = {
     createMany,
     findComment,
     updateComment,
     findCommentByDetails,
-    createComment
+    createComment,
+    findCommentsByWord,
+    find3CommentsByPostId,
+    findById
 }

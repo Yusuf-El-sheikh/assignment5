@@ -13,7 +13,7 @@ async function createMany(req, res, next) {
 }
 
 async function updateComment(req, res, next) {
-    const commentId = req.params.commentId;
+    const commentId = parseInt(req.params.commentId);
     const { userId, content } = req.body;
 
     try {
@@ -30,7 +30,43 @@ async function findOrCreate(req, res, next) {
 
     try {
         const comment = await commentsService.findOrCreate(userId, postId, content);
-        res.status(200).json({message: "Success.", comment})
+        res.status(200).json({ message: "Success.", comment })
+    }
+    catch (error) {
+        next(error);
+    }
+}
+
+async function findCommentsByWord(req, res, next) {
+    const word = req.query.word;
+
+    try {
+        const comment = await commentsService.findCommentsByWord(word);
+        res.status(200).json({ message: "Success.", comment });
+    }
+    catch (error) {
+        next(error);
+    }
+}
+
+async function find3CommentsByPostId(req, res, next) {
+    const postId = parseInt(req.params.postId);
+
+    try {
+        const comment = await commentsService.find3CommentsByPostId(postId);
+        res.status(200).json({ message: "Success.", comment });
+    }
+    catch (error) {
+        next(error);
+    }
+}
+
+async function findById(req, res, next) {
+    const commentId = parseInt(req.params.commentId);
+
+    try {
+        const comment = await commentsService.findById(commentId);
+        res.status(200).json({ message: "Success.", comment });
     }
     catch (error) {
         next(error);
@@ -40,5 +76,8 @@ async function findOrCreate(req, res, next) {
 module.exports = {
     createMany,
     updateComment,
-    findOrCreate
+    findOrCreate,
+    findCommentsByWord,
+    find3CommentsByPostId, 
+    findById
 }

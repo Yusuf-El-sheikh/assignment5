@@ -5,6 +5,8 @@ const usersRouter = require("./users/users.router");
 const postsRouter = require("./posts/posts.router");
 const commentsRouter = require("./comments/comments.router");
 
+const globalErrorHandler = require("./common/error/error")
+
 const express = require("express");
 const app = express();
 

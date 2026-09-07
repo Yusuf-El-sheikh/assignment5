@@ -58,7 +58,7 @@ async function findOrCreate(userId, postId, content) {
     }
 
     const comment = await commentsRepository.findCommentByDetails(postId, userId, content);
-    
+
     if (!comment) {
         const newComment = await commentsRepository.createComment(postId, userId, content);
         return { comment: newComment, created: true };
@@ -67,8 +67,61 @@ async function findOrCreate(userId, postId, content) {
     return { comment, created: false };
 }
 
+async function findCommentsByWord(word) {
+    if (!word) {
+        const error = new Error("Your search word can't be empty.");
+        error.status = 400;
+        throw error;
+    }
+
+    const comment = await commentsRepository.findCommentsByWord(word);
+
+    if (comment.length === 0) {
+        const error = new Error("Comments not found.");
+        error.status = 404;
+        throw error;
+    }
+
+    return { count: comment.length, comments: comment };
+}
+
+async function find3CommentsByPostId(postId) {
+    if (!await postsRepository.getPostById(postId)) {
+        const error = new Error("Post not found.");
+        error.status = 404;
+        throw error;
+    }
+
+    const comment = await commentsRepository.find3CommentsByPostId(postId);
+
+    const length = comment.length;
+
+    if (length === 0) {
+        const error = new Error("Comments not found.");
+        error.status = 404;
+        throw error;
+    }
+
+    return { count: length, comments: comment };
+}
+
+async function findById(commentId) {
+    const comment = await commentsRepository.findById(commentId);
+
+    if (!comment) {
+        const error = new Error("Comment not found.");
+        error.status = 404;
+        throw error;
+    }
+
+    return comment;
+}
+
 module.exports = {
     createMany,
     updateComment,
-    findOrCreate
+    findOrCreate,
+    findCommentsByWord,
+    find3CommentsByPostId,
+    findById
 }

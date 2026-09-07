@@ -14,7 +14,7 @@ async function createPost(req, res, next) {
 
 async function deletePost(req, res, next) {
     const { userId } = req.body;
-    const postId = req.params.postId;
+    const postId = parseInt(req.params.postId);
     try {
         const post = await postsService.deletePost(userId, postId);
         res.status(200).json({ message: "Post deleted successfully.", createdPost: post });
